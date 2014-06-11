@@ -1,0 +1,20 @@
+for j = 1 : 4;
+    figure
+subplot(2,3,1)
+subimage((R_160(j).R.Im))
+subplot(2,3,2)
+subimage((R_60(j).R.Imnoise))
+subplot(2,3,3)
+subimage(uint8(R_60(j).R.Irecon3))
+title('Thresholding')
+subplot(2,3,2)
+title('Noisy Image')
+subplot(2,3,1)
+title('Clean Image')
+subplot(2,3,4)
+subimage(uint8(R_60(j).R.Irecon2))
+title('Linear Estimator')
+subplot(2,3,5)
+subimage(uint8(R_60(j).R.Irecon1))
+title('MMSE')
+end
