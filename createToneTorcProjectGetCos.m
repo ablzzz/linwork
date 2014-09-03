@@ -1,4 +1,4 @@
-function [cleanTonePostVal torcTonePostVal]  = createStepToneTorc(toneDiff, numOfInst, model, space,  dim, paraval )
+function [cleanTonePostVal torcTonePostVal]  = createStepToneTorc(toneDiff, numOfInst, paraval )
 addpath '/shared/persisted/nsltools/'
 %%% toneDiff is the number of bins to skip to create step Tone
 
@@ -21,13 +21,14 @@ for j = 1 : length(startTone);
 	toneClean1 = [tone1 tone2];
 	toneClean = unitseq(toneClean1);
 	toneCleanAud = wav2aud(toneClean, [10 4 0 0]);
-	[cleanTonePostVal(j).prob cleanTonePostVal(j).sorted]  = extractGabFeatureProjectGetPost(toneCleanAud, model, space, dim, paraval);
+	[cr_t rt_t rsf_t] = extractGabFeature(toneCleanAud);
+%	[cleanTonePostVal(j).prob cleanTonePostVal(j).sorted]  = extractGabFeatureProjectGetPost(toneCleanAud, model, space, dim, paraval);
 	k =  1;
 	for snr = -10:5:10; 
 		toneTorcSNR = combineSNR(torc, toneClean1', snr);
 		toneTorcSNR = unitseq(toneTorcSNR);
 		toneTorcSNRAud = wav2aud(toneTorcSNR, [10 4 0 0]);
-		[torcTonePostVal(j,k).prob torcTonePostVal(j,k).sorted]  = extractGabFeatureProjectGetPost(toneTorcSNRAud, model, space, dim, paraval);
+		[R]  = extractGabFeatureProjectGetCos(toneTorcSNRAud, cr_t, rt_t, rsf_t, paraval);
 		[j k]
 		k = k + 1;
 	end

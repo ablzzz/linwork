@@ -1,5 +1,5 @@
 
-function [postval sortedLinS] = extractSpikesFileName(y, model, space, dim, paraval)
+function [R] = extractSpikesFileName(y, cr_t, rt_t, rsf_t, paraval)
     linS = paraval.linS;
     flag = paraval.flag;
     loadload;
@@ -15,15 +15,14 @@ function [postval sortedLinS] = extractSpikesFileName(y, model, space, dim, para
     	cr=aud2cor_bf(y', gab_filters);
     	rt = squeeze(sum(abs(cr), 4));
     	rsf = mean(squeeze(sum(abs(cr), 3)),4);
-        rsf = rsf - space.mean;
-        rsf = tmuln(rsf,space.U{1}(:,:)',1);
-        rsf = tmuln(rsf,space.U{2}(:,:)',2);
-        rsf = tmuln(rsf,space.U{3}(:,:)',3);
-        rsf=rsf(1:dim(1),1:dim(2), 1:dim(3));
-        feat=rsf(:);
-        feat = unitseq(feat)';
-	[a1 postval(j)] = model.posterior(feat);
+        distval_cr_cos(j,1) = pdist2(abs(cr(:))' , abs(cr_t(:))', 'cosine');
+	distval_rt_cos(j,1) = pdist2(abs(rt(:))', abs(rt_t(:))', 'cosine');
+	distval_rsf_cos(j,1) = pdist2(abs(rsf(:))', abs(rsf_t(:))', 'cosine');
     end
     %[d postval] = model.posterior(featval);
-    [ a b] = sort(postval);
-    sortedLinS = linS(b, :);  
+    [ a b] = sort(distval_cr_cos); R.distval_cr_cos = distval_cr_cos; R.col_cr_cos = linS(b,:);
+     [ a b] = sort(distval_rt_cos); R.distval_rt_cos = distval_rt_cos; R.col_rt_cos = linS(b,:);
+
+   [ a b] = sort(distval_rsf_cos); R.distval_rsf_cos = distval_rsf_cos; R.col_rsf_cos = linS(b,:);
+
+
